@@ -50,17 +50,24 @@ fetch('http://localhost:5000/domain')
               res.forEach((item) => {
                 english.extend(
                   [...document.querySelectorAll('[' + item.selector + ']')]
-                    .filter(
-                      (e) =>
-                        e.childElementCount === 0 && e.innerHTML.length !== 0,
-                    )
+                    .filter((e) => {
+                      const el = e.cloneNode()
+                      el.innerHTML = e.innerHTML
+                      Array.from(el.getElementsByTagName('br')).forEach((em) =>
+                        em.remove(),
+                      )
+                      return (
+                        el.childElementCount === 0 && el.innerHTML.length !== 0
+                      )
+                    })
                     .map((el) => ({
                       [`${item.selector}="${el.getAttribute(
                         item.selector,
-                      )}"`]: [el.innerText, getCssSelectorShort(el)],
+                      )}"`]: [el.innerHTML, getCssSelectorShort(el)],
                     })),
                 )
               })
+              console.log(english, 'hahahahahahaahahahahs')
               fetch('http://localhost:5000/extension', {
                 method: 'POST',
                 headers: {
