@@ -67,13 +67,23 @@ fetch('http://localhost:5000/domain')
                     })),
                 )
               })
-              console.log(english, 'hahahahahahaahahahahs')
               fetch('http://localhost:5000/extension', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ english }),
+              }).then(() => {
+                fetch('http://localhost:5000/extension')
+                  .then((result) => result.json())
+                  .then((els) => {
+                    const lan = localStorage.language
+                    els.map((item) => {
+                      if (item[lan] !== null && item[lan] !== undefined)
+                        document.querySelector(item.unique).innerHTML =
+                          item[lan]
+                    })
+                  })
               })
             })
       }
